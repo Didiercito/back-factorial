@@ -3,13 +3,12 @@ package main
 import (
 	"log"
 	"os"
+	"examen-back/config"
+	"examen-back/routes"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"examen-back/config"
 )
-
- 
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -24,9 +23,15 @@ func main() {
 	gin.SetMode(getEnv("GIN_MODE", "debug"))
 	r := gin.Default()
 
+	routes.SetupAnalysisRoutes(r)
+
 	port := getEnv("PORT", "8080")
 	log.Printf("Server running on port %s", port)
-	
+	log.Printf("Endpoints disponibles:")
+	log.Printf("  POST /analyze - Análisis de código")
+	log.Printf("  GET  /api/v1/health - Estado del servicio")
+	log.Printf("  GET  /api/v1/info - Información del analizador")
+
 	if err := r.Run(":" + port); err != nil {
 		log.Fatal("Server failed to start:", err)
 	}
